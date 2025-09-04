@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marca;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
 class MarcaController extends Controller
 {
@@ -51,13 +53,32 @@ class MarcaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request) : RedirectResponse
     {
         $mkNombre = $request->mkNombre;
 
         // Validación
         $this->validar($request);
-        return 'Si llegaste hasta acá, pasaste la validación. Ahora hay que hacer el insert';
+        try {
+            $marca = new Marca; // instanciamos el modelo Marca y creamos el objeto $marca
+            $marca->mkNombre = $mkNombre; // asignamos el valor del campo del formulario al atributo del objeto
+            $marca->save(); // este metodo save() hace un INSERT en la tabla marcas
+
+            return redirect('/marcas')
+                ->with(
+                    [
+                        'mensaje' => "Marca: $mkNombre creada correctamente",
+                        'css' => 'green'
+                    ]);
+        } catch ( \throwable $th) {
+            return redirect('/marcas')
+                ->with(
+                    [
+                        'mensaje'=>'No se pudo registrar la marca: '.$mkNombre,
+                        'css'=>'red'
+                    ]
+                );
+        }
     }
 
     /**
@@ -73,7 +94,10 @@ class MarcaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // obtenemos los datos de una marca por su id
+        $marca = Marca::find($id);
+
+        return view('marca-edit', ['marca' => $marca]);
     }
 
     /**
@@ -81,7 +105,38 @@ class MarcaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $idMarca = $id;
+        // $idMarca = $request->idMarca; // viene oculto en el formulario, esta es otra forma de obtenerlo
+        $mkNombre = $request->mkNombre;
+
+        // Validación
+        $this->validar($request);
+
+        try {
+
+            $marca = Marca::find($idMarca); // obtenemos el objeto marca desde la BD
+            $marca->mkNombre = $mkNombre; // asignamos el valor del campo del formulario al atributo del objeto
+            $marca->save(); // este metodo save() hace un UPDATE en la tabla marcas
+
+            return redirect('/marcas')
+                ->with(
+                    [
+                        'mensaje' => "Marca: $mkNombre actualizada correctamente",
+                        'css' => 'green'
+                    ]);
+
+        }catch( \Throwable $th )
+        {
+            return redirect('/marcas')
+                ->with(
+                    [
+                        'mensaje'=>'No se pudo actualizar la marca: '.$mkNombre,
+                        'css'=>'red'
+                    ]
+                );
+
+          }
+
     }
 
     /**
