@@ -1,14 +1,14 @@
 <img src="extras/imagenes/hero.png">
 
-# Curso de Laravel framework código 76574
+# Proyecto Catálogo MVC
 <img src="https://img.shields.io/badge/Laravel-F55247?style=for-the-badge&logo=laravel&logoColor=white"><img src="https://img.shields.io/badge/PHP-8993BF?style=for-the-badge&logo=php&logoColor=white"><img src="https://img.shields.io/badge/Composer-885630?style=for-the-badge&logo=composer&logoColor=white"><img src="https://img.shields.io/badge/MySQL-4D9EB1?style=for-the-badge&logo=mysql&logoColor=white">
-> Curso de Laravel framework |  
-> Luness y Miércoles de 19hs a 21:30hs (Arg) |  
-> 12 clases desde 06/08/2025 hasta 15/09/2025 |  
-> Código: 76574 |  
-> sensei: Marcos Pinardi |
+> Catálogo hecho con patrón MVC |
+> Desarrollo Web 2025 |  
+> Laravel 12 |  
+> Desarrollador: Martín Contreras |  
+> jahcr1 |
 
-1. Definición
+1. Definición del framework
 2. Requisitos <img alt="Composer Dependency Manager for PHP" src="https://img.shields.io/badge/Composer-885630?style=flat-square" valign="middle"> <img alt="Packagist PHP Version Support" src="https://img.shields.io/packagist/php-v/laravel/laravel?style=flat-square" valign="middle"> <img alt="Packagist Version" src="https://img.shields.io/packagist/v/laravel/laravel" valign="middle">
 3. Recursos
 4. Instalación
@@ -33,8 +33,7 @@
 - [ ] Fácil de mantener
 
 
-## Requisitos
-> De Software
+## Requisitos de Software
 
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/laravel/laravel?style=for-the-badge)
 ![Composer](https://img.shields.io/badge/Composer-885630?style=for-the-badge&logo=composer&logoColor=fff)
@@ -53,6 +52,9 @@
    <https://getcomposer.org/>  
    <https://getcomposer.org/Composer-Setup.exe>
 4. Laravel installer 5.12^ ![Laravel](https://img.shields.io/badge/Laravel-Installer-%23FF2D20.svg?logo=laravel&logoColor=white)  
+>   para instalar por terminal el instalador de laravel
+    composer global require laravel/installer 
+
 
 ## Recursos (enlaces)
 
@@ -79,11 +81,11 @@ LaraJobs <https://larajobs.com/>
     php artisan about  
 
 
-## Iniciar el server 
+## Iniciar el server en la raiz del proyecto
 
 > Y ya podemos arrancar el server:
 
-> para iniciar al server es el comando
+> para iniciar al server se usa el comando
 
 `composer run dev`
 
@@ -93,7 +95,7 @@ LaraJobs <https://larajobs.com/>
 ## Actualizar desde un proyecto existente
 
 >Primero hay que descargar el proyecto existente usando git   
->preferntemente.   
+>preferentemente.   
 >Sino, descargar los archivos de manera tradicional.
 
 > Cuando se descarga de este modo, NO DESCARGA TODO EL PROYECTO.  
@@ -101,24 +103,26 @@ LaraJobs <https://larajobs.com/>
 
 > El comando para clonar todo un proyecto desde git es:
 
-    git clone direccion
+    git clone URL
 
 > Ejemplo:
 
-    git clone https://github.com/exegeses/laravel-71940.git
+    git clone https://github.com/jahcr1/CatalogoMVC.git
 
 
-> Una vez descargado, vamos a obtener los componetes necesorios para que funcione el framework  
-> El comando necesario es "composer update" en el proyecto.  
+> Una vez descargado, vamos a obtener los componentes necesarios para que funcione el framework  
+> El comando necesario es "composer install" en el proyecto, esto nos crea la carpeta vendor desde el composer.json.  
 > No olvidemos primero posicionarnos dentro del directorio del proyecto.
 
     cd catalogo  
-    composer update  
+    composer install  
 
 
 > Cuando haya terminado de descargar y querramos iniciar el proyecto, va a parecer que esta todo funcionando bien, pero aun falta algo.  
 > Al intentar editar el archivo de configuración  ".env" nos damos cuenta que no está- sin embargo, hay un archivo. ".env.example"  
-> Entonces vamos a generar nuetro archivo ".env" renombrando o compiando este archivo.
+> Entonces vamos a generar nuetro archivo ".env" renombrando el archivo quitandole el .example
+> o copiando este archivo y renombrandolo, desde bash sería:
+    cp .env.example .env    
 
 > Ahora si, el último paso es genear la key del proyecto.  
 > Esto se logra con el comando
