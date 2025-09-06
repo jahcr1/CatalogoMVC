@@ -59,8 +59,16 @@
 ```bash 
 composer global require laravel/installer
 ```
+
 > otra forma
 `bash composer global require laravel/installer`
+
+>otra forma2
+    sd
+
+> otra forma 3
+    sddsd
+
 
 
 ## Recursos (enlaces)
