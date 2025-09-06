@@ -54,22 +54,11 @@
 4. Laravel installer 5.12^ ![Laravel](https://img.shields.io/badge/Laravel-Installer-%23FF2D20.svg?logo=laravel&logoColor=white)  
 >   para instalar por terminal el instalador de laravel
 
-    composer global require laravel/installer
-
 ```bash 
 composer global require laravel/installer
 ```
 
-> otra forma
-`bash composer global require laravel/installer`
-
->otra forma2
-    sd
-
-> otra forma 3
-
-    sddsd
-
+----
 
 
 ## Recursos (enlaces)
