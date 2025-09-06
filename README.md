@@ -53,8 +53,11 @@
    <https://getcomposer.org/Composer-Setup.exe>
 4. Laravel installer 5.12^ ![Laravel](https://img.shields.io/badge/Laravel-Installer-%23FF2D20.svg?logo=laravel&logoColor=white)  
 >   para instalar por terminal el instalador de laravel
+
     composer global require laravel/installer
-``` composer global require laravel/installer```
+
+```composer global require laravel/installer```
+
 `composer global require laravel/installer`
 
 
