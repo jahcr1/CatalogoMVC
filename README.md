@@ -56,7 +56,9 @@
 
     composer global require laravel/installer
 
-```composer global require laravel/installer```
+```bash 
+    composer global require laravel/installer
+```
 
 `composer global require laravel/installer`
 
