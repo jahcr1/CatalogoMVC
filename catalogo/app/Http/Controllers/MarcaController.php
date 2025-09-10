@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marca;
+use App\Models\Producto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Throwable;
 
@@ -137,6 +139,35 @@ class MarcaController extends Controller
 
           }
 
+    }
+
+    /**
+     * Esta comprobacion no se hace acá, sino deberiamos hacerla en el modelo Producto para que sea MVC, pero podriamos usarlo alguna vez a la interaccion desde un controlador. esto checkea si hay productos asociados a la marca antes de borrar
+     */
+    private function checkProdxMarca( int $idMarca )
+    {
+        // obj || null
+        // Si lo hacemos por Query Builder con first() devuelve un objeto o null y vemos sus datos con dd()
+
+        /*$check = DB::table('productos')
+                        ->where('idMarca', $idMarca)->first(); */
+
+        // Tambien podemos usar count() que nos devuelve un int o sea 0 o 1 al checkear si existe algun producto con esa marca
+
+        $check = DB::table('productos')
+                        ->where('idMarca', $idMarca)->count();
+        return $check;
+
+    }
+
+
+    /**
+     * Creamos un metodo nuevo confirm para mostrar una vista de confirmación antes de eliminar
+     */
+    public function confirm( string $id)
+    {
+        //dd( $this->checkProdxMarca( $id ) );
+        dd(Producto::checkProductoXMarca( $id ));
     }
 
     /**
