@@ -35,7 +35,7 @@
                         Precio
                     </th>
                     <th  class="p-4">
-                        <x-botones href="#">
+                        <x-botones href="/producto/create">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5.5 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
@@ -47,22 +47,23 @@
 
                 <tbody class="bg-gray-700 ">
                 <!-- loop -->
+                @foreach( $productos as $producto )
                     <tr class="border-t border-gray-500 cursor-pointer hover:bg-gray-600/50">
                         <td class="p-4 text-gray-400">
-                            <img src="/imgs/productos/noDisponible.svg">
+                            <img src="/imgs/productos/{{ $producto->prdImagen }}">
                         </td>
                         <th scope="row" class="py-4 px-6 text-sm font-medium text-white">
-                            {{ 'producto' }}
+                            {{ $producto->prdNombre }}
                         </th>
                         <td class="py-4 px-6 text-sm font-medium text-white text-center">
-                            {{ 'marca' }}
+                            {{ $producto->getMarca->mkNombre }}
                         </td>
                         <td class="py-4 px-6 text-sm font-medium text-white text-center">
-                            {{ 'categoría' }}
+                            {{ $producto->getCategoria->catNombre }}
                         </td>
                         <td class="py-4 px-6 text-sm font-medium text-gray-900  text-center">
                             <span class="bg-green-600 text-green-100 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-green-500">
-                                ${{ 'Precio' }}
+                                ${{ $producto->prdPrecio }}
                             </span>
                         </td>
                         <td>
@@ -80,10 +81,13 @@
                             </x-botones>
                         </td>
                     </tr>
-
+                @endforeach
                 </tbody>
             </table>
 
+        </div>
+        <div class="mx-auto max-w-4xl px-8 py-3 text-green-300">
+            {{ $productos->links() }}
         </div>
 
     </div>

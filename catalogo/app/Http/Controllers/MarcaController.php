@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Redirect;
 use Throwable;
 
 class MarcaController extends Controller
@@ -55,7 +56,7 @@ class MarcaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) : RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $mkNombre = $request->mkNombre;
 
@@ -71,13 +72,14 @@ class MarcaController extends Controller
                     [
                         'mensaje' => "Marca: $mkNombre creada correctamente",
                         'css' => 'green'
-                    ]);
-        } catch ( \throwable $th) {
+                    ]
+                );
+        } catch (\throwable $th) {
             return redirect('/marcas')
                 ->with(
                     [
-                        'mensaje'=>'No se pudo registrar la marca: '.$mkNombre,
-                        'css'=>'red'
+                        'mensaje' => 'No se pudo registrar la marca: ' . $mkNombre,
+                        'css' => 'red'
                     ]
                 );
         }
@@ -125,26 +127,23 @@ class MarcaController extends Controller
                     [
                         'mensaje' => "Marca: $mkNombre actualizada correctamente",
                         'css' => 'green'
-                    ]);
-
-        }catch( \Throwable $th )
-        {
+                    ]
+                );
+        } catch (\Throwable $th) {
             return redirect('/marcas')
                 ->with(
                     [
-                        'mensaje'=>'No se pudo actualizar la marca: '.$mkNombre,
-                        'css'=>'red'
+                        'mensaje' => 'No se pudo actualizar la marca: ' . $mkNombre,
+                        'css' => 'red'
                     ]
                 );
-
-          }
-
+        }
     }
 
     /**
      * Esta comprobacion no se hace acá, sino deberiamos hacerla en el modelo Producto para que sea MVC, pero podriamos usarlo alguna vez a la interaccion desde un controlador. esto checkea si hay productos asociados a la marca antes de borrar
      */
-    private function checkProdxMarca( int $idMarca )
+    private function checkProdxMarca(int $idMarca)
     {
         // obj || null
         // Si lo hacemos por Query Builder con first() devuelve un objeto o null y vemos sus datos con dd()
@@ -155,26 +154,61 @@ class MarcaController extends Controller
         // Tambien podemos usar count() que nos devuelve un int o sea 0 o 1 al checkear si existe algun producto con esa marca
 
         $check = DB::table('productos')
-                        ->where('idMarca', $idMarca)->count();
+            ->where('idMarca', $idMarca)->count();
         return $check;
-
     }
 
 
     /**
      * Creamos un metodo nuevo confirm para mostrar una vista de confirmación antes de eliminar
      */
-    public function confirm( string $id)
+    public function confirm(string $id): RedirectResponse | View
     {
-        //dd( $this->checkProdxMarca( $id ) );
-        dd(Producto::checkProductoXMarca( $id ));
+        $marca = Marca::find($id);
+        // dd( $this->checkProdxMarca( $id ) );
+        // dd(Producto::checkProductoXMarca( $id ));
+        if (Producto::checkProductoXMarca($id)) {
+            return redirect('/marcas')
+                ->with(
+                    [
+                        'mensaje' => 'No se puede eliminar la marca: ' . $marca->mkNombre . ' porque tiene productos asociados',
+                        'css' => 'yellow'
+                    ]
+                );
+        }
+        return view('marca-confirm', ['marca' => $marca]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    //public function destroy(Request $request)
+
+    public function destroy(string $id): RedirectResponse
     {
-        //
+        $marca = Marca::find($id);
+        //$idMarca = $request->idMarca;
+        //$mkNombre = $request->mkNombre;
+        $mkNombre = $marca->mkNombre;
+
+        try {
+            // Marca::destroy($id); // otra forma de eliminar por id
+            $marca->delete();
+            return redirect('/marcas')
+                ->with(
+                    [
+                        'mensaje' => 'Marca: ' . $mkNombre . ' eliminada correctamente',
+                        'css' => 'green'
+                    ]
+                );
+        } catch (\Throwable $th) {
+            return redirect('/marcas')
+                ->with(
+                    [
+                        'mensaje' => 'No se pudo eliminar la marca: ' . $mkNombre,
+                        'css' => 'red'
+                    ]
+                );
+        }
     }
 }

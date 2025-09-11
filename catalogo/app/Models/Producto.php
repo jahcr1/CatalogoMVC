@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Producto extends Model
 {
+    protected $primaryKey = 'idProducto';
+    public $timestamps = false;
+
     static function checkProductoXMarca( int $idMarca )
     {
         // obj || null
@@ -15,5 +19,16 @@ class Producto extends Model
         // Tambien podemos usar count() que nos devuelve un int o sea 0 o 1 al checkear si existe algun producto con esa marca
         $check = Producto::where('idMarca', $idMarca)->count();
         return $check;
+    }
+
+    // Metodos de Relacion
+    public function getMarca() : BelongsTo
+    {
+        return $this->belongsTo(Marca::class, 'idMarca');
+    }
+
+    public function getCategoria() : BelongsTo
+    {
+        return $this->belongsTo(Categoria::class, 'idCategoria');
     }
 }
