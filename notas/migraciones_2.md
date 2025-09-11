@@ -10,13 +10,13 @@
 1. correr migraciones
 2. correr seeders
 
-### opción a
+### Opción a (si existen seeders)
 
     php artisan db:seed --class=CategoriaSeeder  
     php artisan db:seed --class=ProductoSeeder
 
-### opción b
-> en DatabaseSeeder agregar
+### Opción b ( Modificar DatabaseSeeder.php)
+> en DatabaseSeeder.php (en database/seeders/DatabaseSeeder.php), agregar:
 
         $this->call([
             Model1Seeder::class,
@@ -24,6 +24,7 @@
             Model3Seeder::class
         ]);
 
-> en terminar ejecutar: 
+> en terminar ejecutar el siguiente comando que ejecuta el DatabaseSeeder
+> y llena las tablas con las migraciones configuradas: 
 
     php artisan db:seed 
