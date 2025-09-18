@@ -18,31 +18,32 @@ class ProductoController extends Controller
     public function index()
     {
         $productos = Producto::orderByDesc('idProducto')
-                        ->with(['getMarca', 'getCategoria'])
-                        ->paginate(6);
-        return view('productos',
-                [ 'productos' => $productos ]
-            );
+            ->with(['getMarca', 'getCategoria'])
+            ->paginate(6);
+        return view(
+            'productos',
+            ['productos' => $productos]
+        );
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create() : View
+    public function create(): View
     {
         $marcas = Marca::all();
         $categorias = Categoria::all();
 
         return view('producto-create')
-                ->with(
-                    [
-                        'marcas' => $marcas,
-                        'categorias' => $categorias
-                    ]
+            ->with(
+                [
+                    'marcas' => $marcas,
+                    'categorias' => $categorias
+                ]
             );
     }
 
-    private function validarForm( Request $request ) : void
+    private function validarForm(Request $request): void
     {
         $request->validate(
             [
@@ -56,32 +57,37 @@ class ProductoController extends Controller
             [
                 'prdNombre.required' => 'El campo "Nombre del producto" es obligatorio.',
                 'prdNombre.unique' => 'El cambio "Nombre del producto" ya existe.',
-                'prdNombre.min'=>'El campo "Nombre del producto" debe tener como mínimo 2 caractéres.',
-                'prdNombre.max'=>'El campo "Nombre" debe tener 45 caractéres como máximo.',
-                'prdPrecio.required'=>'Complete el campo Precio.',
-                'prdPrecio.numeric'=>'Complete el campo Precio con un número.',
-                'prdPrecio.min'=>'Complete el campo Precio con un número mayor a 0.',
-                'idMarca.required'=>'Seleccione una Marca.',
-                'idMarca.exists'=>'Seleccione una marca existente.',
-                'idCategoria.required'=>'Seleccione una Categoría.',
-                'idCategoria.exists'=>'Seleccione una categoría existente.',
-                'prdDescripcion.required'=>'Complete el campo Descripción.',
-                'prdDescripcion.min'=>'El campo Descripción debe tener como mínimo 5 caractéres.',
-                'prdDescripcion.max'=>'El campo Descripción debe tener 1000 caractéres como máximo.',
-                'prdImagen.mimes'=>'Debe ser una imagen.',
-                'prdImagen.max'=>'Debe ser una imagen de 2MB como máximo.'
+                'prdNombre.min' => 'El campo "Nombre del producto" debe tener como mínimo 2 caractéres.',
+                'prdNombre.max' => 'El campo "Nombre" debe tener 45 caractéres como máximo.',
+                'prdPrecio.required' => 'Complete el campo Precio.',
+                'prdPrecio.numeric' => 'Complete el campo Precio con un número.',
+                'prdPrecio.min' => 'Complete el campo Precio con un número mayor a 0.',
+                'idMarca.required' => 'Seleccione una Marca.',
+                'idMarca.exists' => 'Seleccione una marca existente.',
+                'idCategoria.required' => 'Seleccione una Categoría.',
+                'idCategoria.exists' => 'Seleccione una categoría existente.',
+                'prdDescripcion.required' => 'Complete el campo Descripción.',
+                'prdDescripcion.min' => 'El campo Descripción debe tener como mínimo 5 caractéres.',
+                'prdDescripcion.max' => 'El campo Descripción debe tener 1000 caractéres como máximo.',
+                'prdImagen.mimes' => 'Debe ser una imagen.',
+                'prdImagen.max' => 'Debe ser una imagen de 2MB como máximo.'
 
             ]
         );
     }
 
-    public function subirImagen( Request $request ) : string
+    public function subirImagen(Request $request): string
     {
         // si no se envió ninguna imagen en store()
         $prdImagen = 'noDisponible.svg';
 
+        // si no enviaron imagen en el metodo update()
+        if ($request->has('imgActual')) {
+            $prdImagen = $request->imgActual;
+        }
+
         // si se envió una imagen
-        if( $request->hasFile('prdImagen') ) {
+        if ($request->hasFile('prdImagen')) {
 
             $file = $request->file('prdImagen');
             // renombramos archivo
@@ -90,9 +96,16 @@ class ProductoController extends Controller
             // $prdImagen = $time. '.' .$extension; esto es concatenación
             $prdImagen = "{$time}.{$extension}"; // esto es interpolación
             ##### subimos el archivo
-            $file->move( public_path('/imgs/productos'), $prdImagen );
+            $file->move(public_path('/imgs/productos'), $prdImagen);
         }
         return $prdImagen;
+    }
+
+    private function borrarImagen( string $prdImagen ) : void
+    {
+        if( $prdImagen !== 'noDisponible.svg' ){
+            unlink(public_path('/imgs/productos/'. $prdImagen));
+        }
     }
 
     /**
@@ -116,20 +129,20 @@ class ProductoController extends Controller
             $producto->prdImagen = $prdImagen;
             $producto->save();
             return redirect('/productos')
-                            ->with(
-                                [
-                                    'mensaje'=>'Producto: '.$prdNombre.' agregado correctamente.',
-                                    'css'=>'green'
-                                ]
-                            );
-        }catch( \Throwable $th) {
+                ->with(
+                    [
+                        'mensaje' => 'Producto: ' . $prdNombre . ' agregado correctamente.',
+                        'css' => 'green'
+                    ]
+                );
+        } catch (\Throwable $th) {
             return redirect('/productos')
-            ->with(
-                [
-                    'mensaje'=>'No se pudo agregar el producto: '.$prdNombre,
-                    'css'=>'red'
-                ]
-            );
+                ->with(
+                    [
+                        'mensaje' => 'No se pudo agregar el producto: ' . $prdNombre,
+                        'css' => 'red'
+                    ]
+                );
         }
     }
 
@@ -146,22 +159,92 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        //
+        // inecesario porque usamos route model binding
+        // $producto = Producto::find($id);
+
+        // listado de marcas y categorías
+        $marcas = Marca::all();
+        $categorias = Categoria::all();
+
+        return view(
+            'producto-edit',
+            [
+                'producto' => $producto,
+                'marcas' => $marcas,
+                'categorias' => $categorias
+            ]
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Producto $producto)
+    public function update(ProductoRequest $request, Producto $producto)
     {
-        //
+        $prdNombre = $request->prdNombre;
+        $prdImagen = $this->subirImagen($request);
+
+        try {
+            //asignamos atributos
+            $producto->prdNombre = $prdNombre;
+            $producto->prdPrecio = $request->prdPrecio;
+            $producto->idMarca = $request->idMarca;
+            $producto->idCategoria = $request->idCategoria;
+            $producto->prdDescripcion = $request->prdDescripcion;
+            $producto->prdImagen = $prdImagen;
+            // almacenar en tabla productos
+            $producto->save();
+            return redirect('/productos')
+                ->with(
+                    [
+                        'mensaje' => 'Producto: ' . $prdNombre . ' modificado correctamente.',
+                        'css' => 'green'
+                    ]
+                );
+        } catch (\Throwable $th) {
+            return redirect('/productos')
+                ->with(
+                    [
+                        'mensaje' => 'No se pudo modificar el producto: ' . $prdNombre,
+                        'css' => 'red'
+                    ]
+                );
+        }
     }
+
+    public function confirm(Producto $producto)
+    {
+        return view('producto-confirm', ['producto' => $producto]);
+    }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Producto $producto)
     {
-        //
+        $prdNombre = $producto->prdNombre;
+
+        try {
+            $this->borrarImagen( $producto->prdImagen );
+            $producto->delete();
+             return redirect('/productos')
+                     ->with(
+                         [
+                             'mensaje'=>'Producto: '.$prdNombre.' eliminar correctamente.',
+                             'css'=>'green'
+                         ]
+                     );
+        }
+            catch ( \Throwable $th ){
+            return redirect('/productos')
+                ->with(
+                        [
+                        'mensaje'=>'No se pudo eliminar el producto: '.$prdNombre,
+                        'css'=>'red'
+                        ]
+                );
+            }
     }
 }
+
